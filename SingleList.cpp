@@ -1,3 +1,7 @@
+//Daniel Clark
+//Last Updated: 09/08/15
+//Purpose: Experimentation with singly linked lists
+//Version: 1.0
 
 #include <assert.h>
 #include <stdlib.h>
@@ -23,24 +27,22 @@ void SingleList_destroy( SingleList *object )
 {
     assert( object != NULL );
 
-    // NOTE: The ability to declare variables after executable statements is a C99 (or C++) feature.
+    //The ability to declare variables after executable statements is a C99 (or C++) feature.
     struct SingleListNode *current = object->first;
     while( current != NULL ) {
         struct SingleListNode *temp = current->next;
 
-        // NOTE: This assumes element_type has no special destruction needs.
+        //This assumes element_type has no special destruction needs.
         free( current );
         current = temp;
     }
 }
 
 
-// Daniel Clark
-// 09/03/15
 void SingleList_copy( SingleList *destination, const SingleList *source ) {
     assert( destination != NULL && source != NULL );
 	SingleList_destroy(destination);
-	destination->count = 0; //I discussed this with Zach Matthews... why doesn't SingleList_Destroy do this?
+	destination->count = 0; //Unsure if SingleList_destroy should do this or not...
 	struct SingleListNode *current=source->first;
 	while (current!=NULL) {
 		SingleList_push_back(destination, &current->data);
@@ -79,12 +81,12 @@ int SingleList_equal( const SingleList *object_1, const SingleList *object_2 )
 
     if( object_1->count != object_2->count ) return 0;
 
-    // The counts are equal...
+    //The counts are equal...
     SingleListNode *current_1 = object_1->first;
     SingleListNode *current_2 = object_2->first;
 
     while( current_1 != NULL ) {
-        // NOTE: This assumes element_type can be compared with !=.
+        //This assumes element_type can be compared with !=.
         if( current_1->data != current_2->data ) return 0;
         current_1 = current_1->next;
         current_2 = current_2->next;
@@ -100,15 +102,15 @@ void SingleList_push_front( SingleList *object, const element_type *item )
     struct SingleListNode *new_node =
         ( struct SingleListNode * )malloc( sizeof( struct SingleListNode ) );
 
-    // TODO: Maybe return an error indication if the allocation fails?
+    //TODO: Maybe return an error indication if the allocation fails?
     if( new_node == NULL ) return;
 
-    // NOTE: This assumes element_type can be copied with assignment.
+    //This assumes element_type can be copied with assignment.
     new_node->data = *item;
     new_node->next = object->first;
     object->first = new_node;
 
-    // If the list was empty, it must be handled in a special way.
+    //If the list was empty, it must be handled in a special way.
     if( object->last == NULL ) {
         object->last = object->first;
     }
@@ -120,12 +122,12 @@ element_type SingleList_pop_front( SingleList *object )
 {
     assert( object != NULL && object->first != NULL );
 
-    // NOTE: This assumes element_type can be initialized with assignment.
+    //This assumes element_type can be initialized with assignment.
     element_type temp_item = object->first->data;
     struct SingleListNode *temp = object->first;
     object->first = object->first->next;
 
-    // NOTE: This assumes element_type has no special destruction needs.
+    //This assumes element_type has no special destruction needs.
     free( temp );
     object->count--;
     return temp_item;
@@ -139,10 +141,10 @@ void SingleList_push_back( SingleList *object, const element_type *item )
     struct SingleListNode *new_node =
         ( struct SingleListNode * )malloc( sizeof( struct SingleListNode ) );
 
-    // TODO: Maybe return an error indication if the allocation fails?
+    //TODO: Maybe return an error indication if the allocation fails?
     if( new_node == NULL ) return;
 
-    // NOTE: This assumes element_type can be copied with assignment.
+    //This assumes element_type can be copied with assignment.
     new_node->data = *item;
     new_node->next = NULL;
 
@@ -181,7 +183,7 @@ SingleListIterator SingleList_end( SingleList *object )
 
 int SingleList_equal_iterator( SingleListIterator it_1, SingleListIterator it_2 )
 {
-    // We really want to say the iterators are valid. This doesn't completely do that.
+    //Declare that the iterators are valid. This doesn't completely do that.
     assert( it_1.object != NULL && it_2.object != NULL );
 
     return (it_1.object == it_2.object) && (it_1.current == it_2.current);
@@ -190,7 +192,7 @@ int SingleList_equal_iterator( SingleListIterator it_1, SingleListIterator it_2 
 
 SingleListIterator SingleList_next( SingleListIterator it )
 {
-    // We'd also like to say that it.current points into the list controlled by object.
+    //Declare that it.current points into the list controlled by object.
     assert( it.object != NULL  && it.current != NULL );
 
 	SingleListIterator result;
@@ -199,13 +201,11 @@ SingleListIterator SingleList_next( SingleListIterator it )
 	return result;
 }
 
-
 element_type *SingleList_get( SingleListIterator it )
 {
     assert( it.object != NULL && it.current != NULL );
 	return &it.current->data;
 }
-
 
 void SingleList_insert_after( SingleListIterator it, const element_type *item )
 {
@@ -213,17 +213,17 @@ void SingleList_insert_after( SingleListIterator it, const element_type *item )
 	struct SingleListNode *new_node =
 		( struct SingleListNode * )malloc( sizeof( struct SingleListNode ) );
 
-	// TODO: Maybe return an error indication if the allocation fails?
+	//TODO: Maybe return an error indication if the allocation fails?
 	if( new_node == NULL ) return;
 
-	// This assumes element_type can be copied with assignment.
+	//This assumes element_type can be copied with assignment.
 	new_node->data = *item;
 	new_node->next = it.current->next;
 
 	it.current->next = new_node;
 	it.object->count++;
 
-    // If we are inserting after the last node (appending), we need to update the last pointer.
+    //If we are inserting after the last node (appending), we need to update the last pointer.
     if( it.current == it.object->last ) {
         it.object->last = new_node;
     }

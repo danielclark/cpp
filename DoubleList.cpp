@@ -1,4 +1,7 @@
-
+//Daniel Clark
+//Last Updated: 09/28/15
+//Purpose: Experimentation with doubly linked lists
+//Version: 1.0
 #include <assert.h>
 #include <stdlib.h>
 #include "DoubleList.h"
@@ -24,12 +27,12 @@ void DoubleList_destroy( DoubleList *object )
 {
     assert( object != NULL );
 
-    // NOTE: The ability to declare variables after executable statements is a C99 (or C++) feature.
+    //The ability to declare variables after executable statements is a C99 (or C++) feature.
     struct DoubleListNode *current = object->first;
     while( current != NULL ) {
         struct DoubleListNode *temp = current->next;
 
-        // NOTE: This assumes element_type has no special destruction needs.
+        //This assumes element_type has no special destruction needs.
         free( current );
         current = temp;
     }
@@ -69,12 +72,12 @@ int DoubleList_equal( const DoubleList *object_1, const DoubleList *object_2 )
 
     if( object_1->count != object_2->count ) return 0;
 
-    // The counts are equal...
+    //The counts are equal...
     DoubleListNode *current_1 = object_1->first;
     DoubleListNode *current_2 = object_2->first;
 
     while( current_1 != NULL ) {
-        // NOTE: This assumes element_type can be compared with !=.
+        //This assumes element_type can be compared with !=.
         if( current_1->data != current_2->data ) return 0;
         current_1 = current_1->next;
         current_2 = current_2->next;
@@ -82,8 +85,6 @@ int DoubleList_equal( const DoubleList *object_1, const DoubleList *object_2 )
     return 1;
 }
 
-//Daniel Clark
-//09/14/15
 void DoubleList_push_front( DoubleList *object, const element_type *item )
 {
     assert( object != NULL && item != NULL );
@@ -91,10 +92,10 @@ void DoubleList_push_front( DoubleList *object, const element_type *item )
     struct DoubleListNode *new_node =
         ( struct DoubleListNode * )malloc( sizeof( struct DoubleListNode ) );
 
-    // TODO: Maybe return an error indication if the allocation fails?
+    //TODO: Maybe return an error indication if the allocation fails?
     if( new_node == NULL ) return;
 
-    // FINISH ME!
+    //FINISH ME!
 
     object->count++;
 }
@@ -104,7 +105,7 @@ element_type DoubleList_pop_front( DoubleList *object )
 {
     assert( object != NULL && object->first != NULL );
 
-    // NOTE: This assumes element_type can be initialized with assignment.
+    //This assumes element_type can be initialized with assignment.
     element_type temp_item = object->first->data;
     struct DoubleListNode *temp = object->first;
     object->first = object->first->next;
@@ -113,14 +114,12 @@ element_type DoubleList_pop_front( DoubleList *object )
     else
         object->last = NULL;
 
-    // NOTE: This assumes element_type has no special destruction needs.
+    //This assumes element_type has no special destruction needs.
     free( temp );
     object->count--;
     return temp_item;
 }
 
-//Daniel Clark
-//09/14/15
 void DoubleList_push_back( DoubleList *object, const element_type *item )
 {
     assert( object != NULL && item != NULL );
@@ -128,7 +127,7 @@ void DoubleList_push_back( DoubleList *object, const element_type *item )
     struct DoubleListNode *new_node =
         ( struct DoubleListNode * )malloc( sizeof( struct DoubleListNode ) );
 
-    // TODO: Maybe return an error indication if the allocation fails?
+    //Maybe return an error indication if the allocation fails?
     if( new_node == NULL ) return;
 
     new_node->data = *item;
@@ -144,8 +143,6 @@ void DoubleList_push_back( DoubleList *object, const element_type *item )
     object->count++;
 }
 
-//Daniel Clark
-//09/14/15
 element_type DoubleList_pop_back( DoubleList *object )
 {
     assert( object != NULL && object->last != NULL );
@@ -187,7 +184,7 @@ DoubleListIterator DoubleList_end( DoubleList *object )
 
 int DoubleList_equal_iterator( DoubleListIterator it_1, DoubleListIterator it_2 )
 {
-    // We really want to say the iterators are valid. This doesn't completely do that.
+    //Say the iterators are valid. This doesn't completely do that.
     assert( it_1.object != NULL && it_2.object != NULL );
 
     return (it_1.object == it_2.object) && (it_1.current == it_2.current);
@@ -196,7 +193,7 @@ int DoubleList_equal_iterator( DoubleListIterator it_1, DoubleListIterator it_2 
 
 DoubleListIterator DoubleList_next( DoubleListIterator it )
 {
-    // We'd also like to say that it.current points into the list controlled by object.
+    //Say that it.current points into the list controlled by object.
     assert( it.object != NULL  && it.current != NULL );
 
 	DoubleListIterator result;
@@ -208,7 +205,7 @@ DoubleListIterator DoubleList_next( DoubleListIterator it )
 
 DoubleListIterator DoubleList_previous( DoubleListIterator it )
 {
-    // We'd also like to say that it.current points into the list controlled by object.
+    //Say that it.current points into the list controlled by object.
     assert( it.object != NULL );
     DoubleListIterator result;
 
@@ -230,8 +227,6 @@ element_type *DoubleList_get( DoubleListIterator it )
 	return &it.current->data;
 }
 
-//Daniel Clark
-//09/14/15
 void DoubleList_insert_before( DoubleListIterator it, const element_type *item )
 {
     assert( it.object != NULL && item != NULL );
@@ -256,26 +251,26 @@ int DoubleList_invariant( const DoubleList *object )
     actual_count = 0;
     while( current != NULL ) {
         actual_count++;
-        // Make sure the previous pointers in the nodes are correct.
+        //Make sure the previous pointers in the nodes are correct.
         if( current->previous != previous ) return 0;
         previous = current;
         current = current->next;
     }
 
-    // Make sure the count in the object is correct.
+    //Make sure the count in the object is correct.
     if( object->count != actual_count ) return 0;
 
-    // The first and last pointers are either both NULL or both non-NULL.
+    //The first and last pointers are either both NULL or both non-NULL.
     if( object->first == NULL && object->last != NULL ) return 0;
     if( object->first != NULL && object->last == NULL ) return 0;
 
-    // Check list terminations.
+    //Check list terminations.
     if( object->count > 0 ) {
         if( object->first->previous != NULL ) return 0;
         if( object->last->next != NULL ) return 0;
     }
 
-    // Check special handling of a single node.
+    //Check special handling of a single node.
     if( object->count == 1 ) {
         if( object->first != object->last ) return 0;
     }
